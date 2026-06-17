@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-cream text-ink font-sans antialiased;
+    overflow-x: hidden;
+  }
+  /* Bengali script needs breathing room */
+  .font-bengali,
+  [lang="bn"] {
+    line-height: 1.7;
+    font-feature-settings: "kern", "liga", "calt";
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  .container-px {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .glass {
+    @apply backdrop-blur-xl bg-white/10 border border-white/20;
+  }
+  .gradient-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.7),
+      rgba(0, 0, 0, 0.3) 50%,
+      transparent
+    );
+  }
+  .btn-saffron {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-saffron px-6 py-3 font-bengali font-bold text-white shadow-lg transition-all hover:brightness-110 active:scale-95;
+    min-height: 44px;
+  }
+  .btn-indigo {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-indigo-brand px-6 py-3 font-bengali font-bold text-white shadow-lg transition-all hover:brightness-110 active:scale-95;
+    min-height: 44px;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/40 bg-white/10 px-6 py-3 font-bengali font-bold text-white backdrop-blur transition-all hover:bg-white/20 active:scale-95;
+    min-height: 44px;
+  }
+  .discount-shimmer {
+    background: linear-gradient(
+      110deg,
+      #F59E0B 0%,
+      #fcd34d 30%,
+      #fffbeb 50%,
+      #fcd34d 70%,
+      #F59E0B 100%
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .pb-safe { padding-bottom: calc(0.5rem + var(--safe-bottom)); }
+  .skeleton {
+    @apply relative overflow-hidden bg-slate-200;
+  }
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+  }
+}
+
+/* Lenis smooth scroll */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-ken-burns { animation: none !important; transform: none !important; }
+}
