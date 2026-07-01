@@ -8,7 +8,7 @@ import { telUrl, waGeneralUrl } from "@/lib/utils/whatsapp";
 const items = [
   { href: "/", label: "হোম", icon: Home },
   { href: "/packages", label: "প্যাকেজ", icon: Map },
-  { href: "/packages?season=bumper", label: "অফার", icon: Flame },
+  { href: "/offers", label: "অফার", icon: Flame },
 ];
 
 export default function BottomNav() {

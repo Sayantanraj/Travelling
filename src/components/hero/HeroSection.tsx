@@ -43,6 +43,7 @@ export default function HeroSection() {
           muted
           loop
           playsInline
+          preload="auto"
           poster={heroMontage[0]}
           onError={() => setVideoOk(false)}
           className="absolute inset-0 h-full w-full object-cover"

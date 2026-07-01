@@ -2,29 +2,62 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plane } from "lucide-react";
+import { heroMontage, heroVideo } from "@/lib/data/images";
 
 const NAME = "Howladar";
-const MIN_MS = 2400; // keep the animation on screen at least this long
-const MAX_MS = 7000; // hard cap so it never hangs
+const MIN_MS = 1800; // keep the animation on screen at least this long
+const MAX_MS = 9000; // hard cap so it never hangs
 const easeOut = [0.16, 1, 0.3, 1] as const;
+
+// Preload a single image; resolves on load OR error so we never hang.
+const preloadImage = (src: string) =>
+  new Promise<void>((res) => {
+    const img = new window.Image();
+    img.onload = img.onerror = () => res();
+    img.src = src;
+  });
+
+// Preload the hero video until it can actually play (first frame buffered),
+// so it plays instantly when the splash lifts — no "image first, then video".
+const preloadVideo = (src: string) =>
+  new Promise<void>((res) => {
+    const v = document.createElement("video");
+    v.muted = true;
+    v.preload = "auto";
+    v.playsInline = true;
+    const done = () => res();
+    v.addEventListener("canplay", done, { once: true });
+    v.addEventListener("loadeddata", done, { once: true });
+    v.addEventListener("error", done, { once: true });
+    v.src = src;
+    v.load();
+    setTimeout(done, MAX_MS - 1000); // per-asset safety cap
+  });
 
 export default function Preloader() {
   const [done, setDone] = useState(false);
   const [pct, setPct] = useState(0);
 
-  // Ready logic: hide after window load + min time, capped.
+  // Ready logic: wait until the hero video can play + montage images load,
+  // then keep the splash for a minimum time. Capped so it never hangs.
   useEffect(() => {
     const start = performance.now();
     let minTimer: ReturnType<typeof setTimeout>;
+    let settled = false;
     const finish = () => {
+      if (settled) return;
+      settled = true;
       const elapsed = performance.now() - start;
       minTimer = setTimeout(() => setDone(true), Math.max(0, MIN_MS - elapsed));
     };
-    if (document.readyState === "complete") finish();
-    else window.addEventListener("load", finish, { once: true });
+
+    Promise.all([
+      preloadVideo(heroVideo),
+      ...heroMontage.map(preloadImage),
+    ]).then(finish);
+
     const cap = setTimeout(() => setDone(true), MAX_MS);
     return () => {
-      window.removeEventListener("load", finish);
       clearTimeout(minTimer);
       clearTimeout(cap);
     };
