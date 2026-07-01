@@ -153,7 +153,7 @@ export default function Preloader() {
                 animate={{ offsetDistance: ["0%", "100%"] } as any}
                 transition={{ duration: 2.6, ease: "easeInOut", repeat: Infinity }}
               >
-                <Plane size={22} className="-rotate-45 drop-shadow-[0_0_8px_rgba(245,158,11,0.7)]" />
+                <Plane size={22} className="rotate-45 drop-shadow-[0_0_8px_rgba(245,158,11,0.7)]" />
               </motion.div>
             </div>
 
